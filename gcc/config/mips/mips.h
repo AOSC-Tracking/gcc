@@ -917,7 +917,9 @@ struct mips_cpu_info {
   {"lxc1-sxc1", "%{!mlxc1-sxc1:%{!mno-lxc1-sxc1:-m%(VALUE)}}" }, \
   {"madd4", "%{!mmadd4:%{!mno-madd4:-m%(VALUE)}}" }, \
   {"compact-branches", "%{!mcompact-branches=*:-mcompact-branches=%(VALUE)}" }, \
-  {"msa", "%{!mmsa:%{!mno-msa:-m%(VALUE)}}" } \
+  {"msa", "%{!mmsa:%{!mno-msa:-m%(VALUE)}}" }, \
+  {"fix-loongson3-llsc", "%{!mfix-loongson3-llsc:   \
+			  %{!mno-fix-loongson3-llsc:-m%(VALUE)}}" }
 
 /* A spec that infers the:
    -mnan=2008 setting from a -mips argument,

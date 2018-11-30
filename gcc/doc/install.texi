@@ -1716,6 +1716,10 @@ These features are extensions to the traditional
 SVR4-based MIPS ABIs and require support from GNU binutils
 and the runtime C library.
 
+@item --with-fix-loongson3-llsc
+On MIPS Loongson3 targets, make @option{-mfix-loongson3-llsc} the default when no
+@option{-mno-fix-loongson3-llsc} option is passed.
+
 @item --with-stack-clash-protection-guard-size=@var{size}
 On certain targets this option sets the default stack clash protection guard
 size as a power of two in bytes.  On AArch64 @var{size} is required to be either
