@@ -283,6 +283,7 @@ foreach option {
     fix-r4000
     fix-r10000
     fix-vr4130
+    fix-loongson3-llsc
     gpopt
     local-sdata
     long-calls
