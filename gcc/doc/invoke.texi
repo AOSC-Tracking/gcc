@@ -1123,6 +1123,7 @@ Objective-C and Objective-C++ Dialects}.
 -mfix-r10000  -mno-fix-r10000  -mfix-rm7000  -mno-fix-rm7000
 -mfix-vr4120  -mno-fix-vr4120
 -mfix-vr4130  -mno-fix-vr4130  -mfix-sb1  -mno-fix-sb1
+-mfix-loongson3-llsc  -mno-fix-loongson3-llsc
 -mflush-func=@var{func}  -mno-flush-func
 -mbranch-cost=@var{num}  -mbranch-likely  -mno-branch-likely
 -mcompact-branches=@var{policy}
@@ -27662,6 +27663,13 @@ effects even if aborted.  @option{-mr10k-cache-barrier=@var{setting}}
 controls GCC's implementation of this workaround.  It assumes that
 aborted accesses to any byte in the following regions does not have
 side effects:
+
+@item -mfix-loongson3-llsc
+@opindex mfix-loongson3-llsc
+Work around the Loongson3 @code{ll}/@code{sc} errata.  The workarounds
+are implemented by the GCC and the assembler.  The GCC added
+@code{sync} before branch target that between @code{ll}/@code{sc}.
+The assembler added @code{sync} before @code{ll}.
 
 @enumerate
 @item

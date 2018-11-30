@@ -193,6 +193,10 @@ mfix4300
 Target Var(TARGET_4300_MUL_FIX)
 Work around an early 4300 hardware bug.
 
+mfix-loongson3-llsc
+Target Var(FIX_LOONGSON3_LLSC)
+Work around an Loongson3 llsc errata.
+
 mfp-exceptions
 Target Var(TARGET_FP_EXCEPTIONS) Init(1)
 FP exceptions are enabled.

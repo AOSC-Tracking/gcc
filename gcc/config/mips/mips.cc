@@ -14315,7 +14315,7 @@ mips_process_sync_loop (rtx_insn *insn, rtx *operands)
   mips_multi_start ();
 
   /* Output the release side of the memory barrier.  */
-  if (need_atomic_barrier_p (model, true))
+  if (need_atomic_barrier_p (model, true) && !FIX_LOONGSON3_LLSC)
     {
       if (required_oldval == 0 && TARGET_OCTEON)
 	{
@@ -14335,6 +14335,10 @@ mips_process_sync_loop (rtx_insn *insn, rtx *operands)
 
   /* Output the branch-back label.  */
   mips_multi_add_label ("1:");
+
+  /* Loongson3 target need sync before ll/lld.  */
+  if (need_atomic_barrier_p (model,  true) && FIX_LOONGSON3_LLSC)
+    mips_multi_add_insn ("sync", NULL);
 
   /* OLDVAL = *MEM.  */
   mips_multi_add_insn (is_64bit_p ? "lld\t%0,%1" : "ll\t%0,%1",
@@ -14445,12 +14449,17 @@ mips_process_sync_loop (rtx_insn *insn, rtx *operands)
     mips_multi_add_insn ("li\t%0,1", cmp, NULL);
 
   /* Output the acquire side of the memory barrier.  */
-  if (TARGET_SYNC_AFTER_SC && need_atomic_barrier_p (model, false))
+  if (TARGET_SYNC_AFTER_SC && need_atomic_barrier_p (model, false)
+      && !FIX_LOONGSON3_LLSC)
     mips_multi_add_insn ("sync", NULL);
 
   /* Output the exit label, if needed.  */
   if (required_oldval)
     mips_multi_add_label ("2:");
+
+  /* Loongson3 need a sync before branch target that between ll and sc.  */
+  if (FIX_LOONGSON3_LLSC)
+    mips_multi_add_insn ("sync", NULL);
 
 #undef READ_OPERAND
 }
