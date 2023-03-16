@@ -23,6 +23,8 @@ along with GCC; see the file COPYING3.  If not see
 
 #include "config/loongarch/loongarch-opts.h"
 
+#define TARGET_SUPPORTS_WIDE_INT 1
+
 /* Macros to silence warnings about numbers being signed in traditional
    C and unsigned in ISO C when compiled on 32-bit hosts.  */
 
@@ -179,6 +181,16 @@ along with GCC; see the file COPYING3.  If not see
 #define MIN_UNITS_PER_WORD 4
 #endif
 
+/* Width of a LSX vector register in bytes.  */
+#define UNITS_PER_LSX_REG 16
+/* Width of a LSX vector register in bits.  */
+#define BITS_PER_LSX_REG (UNITS_PER_LSX_REG * BITS_PER_UNIT)
+
+/* Width of a LASX vector register in bytes.  */
+#define UNITS_PER_LASX_REG 32
+/* Width of a LASX vector register in bits.  */
+#define BITS_PER_LASX_REG (UNITS_PER_LASX_REG * BITS_PER_UNIT)
+
 /* For LARCH, width of a floating point register.  */
 #define UNITS_PER_FPREG (TARGET_DOUBLE_FLOAT ? 8 : 4)
 
@@ -241,8 +253,11 @@ along with GCC; see the file COPYING3.  If not see
 #define STRUCTURE_SIZE_BOUNDARY 8
 
 /* There is no point aligning anything to a rounder boundary than
-   LONG_DOUBLE_TYPE_SIZE.  */
-#define BIGGEST_ALIGNMENT (LONG_DOUBLE_TYPE_SIZE)
+   LONG_DOUBLE_TYPE_SIZE, unless under LSX/LASX the bigggest alignment is
+   BITS_PER_LSX_REG/BITS_PER_LASX_REG/..  */
+#define BIGGEST_ALIGNMENT \
+  (ISA_HAS_LASX? BITS_PER_LASX_REG \
+   : (ISA_HAS_LSX ? BITS_PER_LSX_REG : LONG_DOUBLE_TYPE_SIZE))
 
 /* All accesses must be aligned.  */
 #define STRICT_ALIGNMENT (TARGET_STRICT_ALIGN)
@@ -378,6 +393,13 @@ along with GCC; see the file COPYING3.  If not see
 #define FP_REG_FIRST 32
 #define FP_REG_LAST 63
 #define FP_REG_NUM (FP_REG_LAST - FP_REG_FIRST + 1)
+#define LSX_REG_FIRST FP_REG_FIRST
+#define LSX_REG_LAST  FP_REG_LAST
+#define LSX_REG_NUM   FP_REG_NUM
+
+#define LASX_REG_FIRST FP_REG_FIRST
+#define LASX_REG_LAST  FP_REG_LAST
+#define LASX_REG_NUM   FP_REG_NUM
 
 /* The DWARF 2 CFA column which tracks the return address from a
    signal handler context.  This means that to maintain backwards
@@ -395,8 +417,14 @@ along with GCC; see the file COPYING3.  If not see
   ((unsigned int) ((int) (REGNO) - FP_REG_FIRST) < FP_REG_NUM)
 #define FCC_REG_P(REGNO) \
   ((unsigned int) ((int) (REGNO) - FCC_REG_FIRST) < FCC_REG_NUM)
+#define LSX_REG_P(REGNO) \
+  ((unsigned int) ((int) (REGNO) - LSX_REG_FIRST) < LSX_REG_NUM)
+#define LASX_REG_P(REGNO) \
+  ((unsigned int) ((int) (REGNO) - LASX_REG_FIRST) < LASX_REG_NUM)
 
 #define FP_REG_RTX_P(X) (REG_P (X) && FP_REG_P (REGNO (X)))
+#define LSX_REG_RTX_P(X) (REG_P (X) && LSX_REG_P (REGNO (X)))
+#define LASX_REG_RTX_P(X) (REG_P (X) && LASX_REG_P (REGNO (X)))
 
 /* Select a register mode required for caller save of hard regno REGNO.  */
 #define HARD_REGNO_CALLER_SAVE_MODE(REGNO, NREGS, MODE) \
@@ -577,6 +605,11 @@ enum reg_class
 #define IMM12_OPERAND(VALUE) \
   ((unsigned HOST_WIDE_INT) (VALUE) + IMM_REACH / 2 < IMM_REACH)
 
+/* True if VALUE is a signed 13-bit number.  */
+
+#define IMM13_OPERAND(VALUE) \
+  ((unsigned HOST_WIDE_INT) (VALUE) + 0x1000 < 0x2000)
+
 /* True if VALUE is a signed 16-bit number.  */
 
 #define IMM16_OPERAND(VALUE) \
@@ -705,6 +738,20 @@ enum reg_class
 #define GP_ARG_LAST (GP_ARG_FIRST + MAX_ARGS_IN_REGISTERS - 1)
 #define FP_ARG_FIRST (FP_REG_FIRST + 0)
 #define FP_ARG_LAST (FP_ARG_FIRST + MAX_ARGS_IN_REGISTERS - 1)
+
+/* True if MODE is vector and supported in a LSX vector register.  */
+#define LSX_SUPPORTED_MODE_P(MODE)			\
+  (ISA_HAS_LSX						\
+   && GET_MODE_SIZE (MODE) == UNITS_PER_LSX_REG		\
+   && (GET_MODE_CLASS (MODE) == MODE_VECTOR_INT		\
+       || GET_MODE_CLASS (MODE) == MODE_VECTOR_FLOAT))
+
+#define LASX_SUPPORTED_MODE_P(MODE)			\
+  (ISA_HAS_LASX						\
+   && (GET_MODE_SIZE (MODE) == UNITS_PER_LSX_REG	\
+       ||GET_MODE_SIZE (MODE) == UNITS_PER_LASX_REG)	\
+   && (GET_MODE_CLASS (MODE) == MODE_VECTOR_INT		\
+       || GET_MODE_CLASS (MODE) == MODE_VECTOR_FLOAT))
 
 /* 1 if N is a possible register number for function argument passing.
    We have no FP argument registers when soft-float.  */
