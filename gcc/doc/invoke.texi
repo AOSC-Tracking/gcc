@@ -25989,6 +25989,13 @@ detecting corresponding assembler support:
 @option{-mrelax} option, @option{-mno-pass-mrelax-to-as} otherwise.
 This option is mostly useful for debugging, or interoperation with
 assemblers different from the build-time one.
+
+@item loongarch-vect-unroll-limit
+The vectorizer will use available tuning information to determine whether it
+would be beneficial to unroll the main vectorized loop and by how much.  This
+parameter set's the upper bound of how much the vectorizer will unroll the main
+loop.  The default value is six.
+
 @end table
 
 
