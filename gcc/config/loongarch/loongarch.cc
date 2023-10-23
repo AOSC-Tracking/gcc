@@ -7374,7 +7374,24 @@ loongarch_option_override_internal (struct gcc_options *opts,
   loongarch_update_gcc_opt_status (&la_target, opts, opts_set);
   loongarch_cpu_option_override (&la_target, opts, opts_set);
 
-  loongarch_update_gcc_opt_status (&la_target, opts, opts_set);
+  if (la_opt_explicit_relocs != M_OPT_UNSET
+      && la_opt_explicit_relocs_backward != M_OPT_UNSET)
+    error ("do not use %qs (with %qs) and %qs (without %qs) together",
+	   "-mexplicit-relocs=", "=",
+	   la_opt_explicit_relocs_backward ? "-mexplicit-relocs"
+					   : "-mno-explicit-relocs", "=");
+
+  if (la_opt_explicit_relocs_backward != M_OPT_UNSET)
+    la_opt_explicit_relocs = (la_opt_explicit_relocs_backward
+			      ? EXPLICIT_RELOCS_ALWAYS
+			      : EXPLICIT_RELOCS_NONE);
+
+  if (la_opt_explicit_relocs == M_OPT_UNSET)
+    la_opt_explicit_relocs = (HAVE_AS_EXPLICIT_RELOCS
+			      ? (HAVE_AS_MRELAX_OPTION
+				 ? EXPLICIT_RELOCS_AUTO
+				 : EXPLICIT_RELOCS_ALWAYS)
+			      : EXPLICIT_RELOCS_NONE);
 
   if (TARGET_ABI_LP64)
     flag_pcc_struct_return = 0;
@@ -7406,7 +7423,7 @@ loongarch_option_override_internal (struct gcc_options *opts,
       case CMODEL_EXTREME:
 	if (!TARGET_EXPLICIT_RELOCS)
 	  error ("code model %qs needs %s",
-		 "extreme", "-mexplicit-relocs");
+		 "extreme", "-mexplicit-relocs=always");
 
 	if (opts->x_flag_plt)
 	  {
@@ -7427,10 +7444,6 @@ loongarch_option_override_internal (struct gcc_options *opts,
       default:
 	gcc_unreachable ();
     }
-
-  if (TARGET_EXPLICIT_RELOCS == M_OPTION_NOT_SEEN)
-    TARGET_EXPLICIT_RELOCS = (HAVE_AS_EXPLICIT_RELOCS
-			      && !loongarch_mrelax);
 
   /* Validate the guard size.  */
   int guard_size = param_stack_clash_protection_guard_size;
@@ -7739,7 +7752,8 @@ loongarch_handle_model_attribute (tree *node, tree name, tree arg, int,
       if (!TARGET_EXPLICIT_RELOCS)
 	{
 	  error_at (DECL_SOURCE_LOCATION (decl),
-		    "%qE attribute requires %s", name, "-mexplicit-relocs");
+		    "%qE attribute requires %s", name,
+		    "-mexplicit-relocs=always");
 	  *no_add_attrs = true;
 	  return NULL_TREE;
 	}
