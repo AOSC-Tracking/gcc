@@ -25948,11 +25948,20 @@ The default code model is @code{normal}.
 @itemx -mno-explicit-relocs
 Use or do not use assembler relocation operators when dealing with symbolic
 addresses.  The alternative is to use assembler macros instead, which may
-limit instruction scheduling but allow linker relaxation.  The default
+limit instruction scheduling but allow linker relaxation.
+with @option{-mexplicit-relocs=none} the assembler macros are always used,
+with @option{-mexplicit-relocs=always} the assembler relocation operators
+are always used, with @option{-mexplicit-relocs=auto} the compiler will
+use the relocation operators where the linker relaxation is impossible to
+improve the code quality, and macros elsewhere.  The default
 value for the option is determined with the assembler capability detected
-during GCC build-time and the setting of @code{-mrelax}:
-@code{-mexplicit-relocs} if the assembler supports relocation operators
-but @code{-mrelax} is not enabled, @code{-mno-explicit-relocs} otherwise.
+during GCC build-time and the setting of @option{-mrelax}:
+@option{-mexplicit-relocs=none} if the assembler does not support
+relocation operators at all,
+@option{-mexplicit-relocs=always} if the assembler supports relocation
+operators but @option{-mrelax} is not enabled,
+@option{-mexplicit-relocs=auto} if the assembler supports relocation
+operators and @option{-mrelax} is enabled.
 
 @opindex mdirect-extern-access
 @item -mdirect-extern-access
