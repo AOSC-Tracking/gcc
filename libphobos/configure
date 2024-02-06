@@ -690,6 +690,8 @@ DRUNTIME_CPU_S390_FALSE
 DRUNTIME_CPU_S390_TRUE
 DRUNTIME_CPU_SYSTEMZ_FALSE
 DRUNTIME_CPU_SYSTEMZ_TRUE
+DRUNTIME_CPU_LOONGARCH64_FALSE
+DRUNTIME_CPU_LOONGARCH64_TRUE
 DRUNTIME_CPU_X86_FALSE
 DRUNTIME_CPU_X86_TRUE
 DRUNTIME_CPU_POWERPC_FALSE
@@ -14173,6 +14175,9 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
       s390)
                druntime_target_cpu_parsed="s390"
                ;;
+      loongarch64*)
+               druntime_target_cpu_parsed="loongarch64"
+               ;;
   esac
    if test "$druntime_target_cpu_parsed" = "aarch64"; then
   DRUNTIME_CPU_AARCH64_TRUE=
@@ -14228,6 +14233,14 @@ fi
 else
   DRUNTIME_CPU_S390_TRUE='#'
   DRUNTIME_CPU_S390_FALSE=
+fi
+
+if test "$druntime_target_cpu_parsed" = "loongarch64"; then
+  DRUNTIME_CPU_LOONGARCH64_TRUE=
+  DRUNTIME_CPU_LOONGARCH64_FALSE='#'
+else
+  DRUNTIME_CPU_LOONGARCH64_TRUE='#'
+  DRUNTIME_CPU_LOONGARCH64_FALSE=
 fi
 
 
