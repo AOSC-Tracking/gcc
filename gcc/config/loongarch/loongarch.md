@@ -573,6 +573,7 @@
 (define_code_attr insn [(ashift "sll")
 			(ashiftrt "sra")
 			(lshiftrt "srl")
+			(rotatert "rotr")
 			(ior "or")
 			(xor "xor")
 			(and "and")
