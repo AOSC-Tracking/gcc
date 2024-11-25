@@ -5263,10 +5263,6 @@ if [ "${enable_host_shared}" = "yes" ]; then
   shared=yes
 fi
 
-if [ "${shared}" != "yes" ]; then
-  PICFLAG=
-fi
-
 
 NOASANFLAG=
 case " ${CFLAGS} " in
