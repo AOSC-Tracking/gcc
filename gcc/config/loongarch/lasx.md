@@ -1402,28 +1402,6 @@
   [(set_attr "type" "simd_int_arith")
    (set_attr "mode" "<MODE>")])
 
-(define_expand "vec_cmp<mode><mode256_i>"
-  [(set (match_operand:<VIMODE256> 0 "register_operand")
-	(match_operator 1 ""
-	  [(match_operand:LASX 2 "register_operand")
-	   (match_operand:LASX 3 "register_operand")]))]
-  "ISA_HAS_LASX"
-{
-  loongarch_expand_vec_cmp (operands);
-  DONE;
-})
-
-(define_expand "vec_cmpu<ILASX:mode><mode256_i>"
-  [(set (match_operand:<VIMODE256> 0 "register_operand")
-	(match_operator 1 ""
-	  [(match_operand:ILASX 2 "register_operand")
-	   (match_operand:ILASX 3 "register_operand")]))]
-  "ISA_HAS_LASX"
-{
-  loongarch_expand_vec_cmp (operands);
-  DONE;
-})
-
 (define_insn "lasx_xvfclass_<flasxfmt>"
   [(set (match_operand:<VIMODE256> 0 "register_operand" "=f")
 	(unspec:<VIMODE256> [(match_operand:FLASX 1 "register_operand" "f")]

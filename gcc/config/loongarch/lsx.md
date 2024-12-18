@@ -511,28 +511,6 @@
   DONE;
 })
 
-(define_expand "vec_cmp<mode><mode_i>"
-  [(set (match_operand:<VIMODE> 0 "register_operand")
-	(match_operator 1 ""
-	  [(match_operand:LSX 2 "register_operand")
-	   (match_operand:LSX 3 "register_operand")]))]
-  "ISA_HAS_LSX"
-{
-  loongarch_expand_vec_cmp (operands);
-  DONE;
-})
-
-(define_expand "vec_cmpu<ILSX:mode><mode_i>"
-  [(set (match_operand:<VIMODE> 0 "register_operand")
-	(match_operator 1 ""
-	  [(match_operand:ILSX 2 "register_operand")
-	   (match_operand:ILSX 3 "register_operand")]))]
-  "ISA_HAS_LSX"
-{
-  loongarch_expand_vec_cmp (operands);
-  DONE;
-})
-
 (define_expand "vcondu<LSX:mode><ILSX:mode>"
   [(match_operand:LSX 0 "register_operand")
    (match_operand:LSX 1 "reg_or_m1_operand")
