@@ -876,7 +876,7 @@
   [(set (match_operand:LSX 0 "nonimmediate_operand" "=f,f,R,*r,*f")
 	(match_operand:LSX 1 "move_operand" "fYGYI,R,f,*f,*r"))]
   "ISA_HAS_LSX"
-{ return loongarch_output_move (operands[0], operands[1]); }
+{ return loongarch_output_move (operands); }
   [(set_attr "type" "simd_move,simd_load,simd_store,simd_copy,simd_insert")
    (set_attr "mode" "<MODE>")])
 
