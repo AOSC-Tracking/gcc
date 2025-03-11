@@ -21,5 +21,5 @@ along with GCC; see the file COPYING3.  If not see
    for the Go language.  */
 
 {".go",  "@go", 0, 1, 0},
-{"@go",  "go1 %i %(cc1_options) %{I*} %{L*} %D %{!fsyntax-only:%(invoke_as)}",
+{"@go",  "go1 %i %(cc1_options) %{I*} %{L*} -L/usr/lib %{!fsyntax-only:%(invoke_as)}",
     0, 1, 0},
