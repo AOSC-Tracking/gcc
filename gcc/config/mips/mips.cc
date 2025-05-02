@@ -20993,6 +20993,10 @@ mips_option_override (void)
     REAL_MODE_FORMAT (SFmode) = &spu_single_format;
 
   mips_register_frame_header_opt ();
+
+  /* FIXME: PR120050 */
+  if (!OPTION_SET_P (flag_ext_dce))
+    flag_ext_dce = 0;
 }
 
 /* Swap the register information for registers I and I + 1, which
