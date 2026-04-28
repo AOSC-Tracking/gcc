@@ -217,4 +217,6 @@ extern rtx loongarch_gen_const_int_vector_shuffle (machine_mode, int);
 extern tree loongarch_build_builtin_va_list (void);
 
 extern rtx loongarch_build_signbit_mask (machine_mode, bool, bool);
+extern bool loongarch_symbol_extreme_p (enum loongarch_symbol_type);
+extern void loongarch_output_asm_load_canary (rtx reg, rtx canary, rtx tmp);
 #endif /* ! GCC_LOONGARCH_PROTOS_H */
